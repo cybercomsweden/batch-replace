@@ -13,9 +13,9 @@ clean:
 	rm -f batchr_test
 
 batchr: $(SRC_CPP) $(SRC_HEADERS)
-	$(CXX) -o batchr -std=c++11 $(SRC_CPP)
+	$(CXX) -std=c++11 -o batchr $(SRC_CPP) -lstdc++fs
 
 batchr_test: $(TEST_CPP) $(TEST_HEADERS)
-	$(CXX) -Ivendor/doctest -Isrc/ -o batchr_test $(TEST_CPP)
+	$(CXX) -std=c++11 -o batchr_test -Ivendor/doctest -Isrc/ $(TEST_CPP) -lstdc++fs
 
 .PHONY : compile test clean

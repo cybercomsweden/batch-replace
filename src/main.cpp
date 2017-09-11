@@ -1,12 +1,14 @@
+#include <experimental/filesystem>
 #include <iostream>
 #include <string>
 #include <vector>
 
 #include "path.h"
 
+namespace fs = std::experimental::filesystem;
 
-void print_help(std::string const &name) {
-	std::cerr << Path::basename(name) << " [options] <replacement-file> [files..]" << std::endl;
+void print_help(std::string const &exec_name) {
+	std::cerr << exec_name << " [options] <replacement-file> [files..]" << std::endl;
 	std::cerr << std::endl;
 
 	std::cerr << "Batch replace allows you to perform advanced search and replace on arbitrary" << std::endl;
@@ -32,6 +34,7 @@ int main(int argc, char* argv[]) {
 	// Parse all options
 	bool help = false;
 	std::vector<std::string> extensions;
+	extensions.push_back(".cpp");
 
 	int current_idx = 1;
 	for (; current_idx < argc; current_idx++) {
@@ -47,7 +50,8 @@ int main(int argc, char* argv[]) {
 
 		// We're still reading options
 		if (option == "-h" || option == "--help") {
-			print_help(argv[0]);
+			fs::path self_path(argv[0]);
+			print_help(self_path.filename().string());
 			return 0;
 		} else if (option == "--exts") {
 			// We need to consume the next arg, and verify that we don't read
@@ -75,7 +79,7 @@ int main(int argc, char* argv[]) {
 	std::cout << "Replacement file is: " << replacements_file << std::endl;
 
 	// Check if there where any files or folders specified
-	std::vector<std::string> paths;
+	std::vector<fs::path> paths;
 	for (; current_idx < argc; current_idx++) {
 		paths.push_back(argv[current_idx]);
 	}
@@ -87,7 +91,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::cout << "Looking in paths:" << std::endl;
-	for (auto &path : paths) {
+	for (auto &path : Path::list_files(paths, extensions)) {
 		std::cout << "    " << path << std::endl;
 	}
 }
