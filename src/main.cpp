@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "path.h"
+#include "text_replacement.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -76,8 +77,15 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	std::string replacements_file(argv[current_idx++]);
-	std::cout << "Replacement file is: " << replacements_file << std::endl;
+	// Read replacements from the given file and return them in a properly
+	// sorted
+	fs::path replacements_path(argv[current_idx++]);
+	std::vector<std::pair<std::string, std::string>>
+		replacements = replacements_from_file(replacements_path);
+	std::cout << "Replacement file is: " << replacements_path << std::endl;
+	for (auto& r : replacements) {
+		std::cout << "    " << r.first << " -> " << r.second << std::endl;
+	}
 
 	// Check if there where any files or folders specified
 	std::vector<fs::path> paths;
