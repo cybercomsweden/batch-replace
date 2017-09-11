@@ -21,12 +21,13 @@ void print_help(std::string const &exec_name) {
 	std::cerr << "                        last option." << std::endl;
 	std::cerr << "    [files..]           Optional list of files and directories to perform" << std::endl;
 	std::cerr << "                        replacements in. File extentions can be specified" << std::endl;
-	std::cerr << "                        using --exts." << std::endl;
+	std::cerr << "                        using --ext." << std::endl;
 	std::cerr << std::endl;
 
 	std::cerr << "Options:" << std::endl;
 	std::cerr << "    -h, --help  Display this help message" << std::endl;
-	std::cerr << "    --exts      Comma separated list of extensions to search in." << std::endl;
+	std::cerr << "    -e, --ext   Extensions to search for. For multiple extentions, " << std::endl;
+	std::cerr << "                use -e or --ext for each one." << std::endl;
 }
 
 
@@ -34,8 +35,6 @@ int main(int argc, char* argv[]) {
 	// Parse all options
 	bool help = false;
 	std::vector<std::string> extensions;
-	extensions.push_back(".cpp");
-
 	int current_idx = 1;
 	for (; current_idx < argc; current_idx++) {
 		std::string option(argv[current_idx]);
@@ -53,16 +52,18 @@ int main(int argc, char* argv[]) {
 			fs::path self_path(argv[0]);
 			print_help(self_path.filename().string());
 			return 0;
-		} else if (option == "--exts") {
+		} else if (option == "-e" || option == "--ext") {
 			// We need to consume the next arg, and verify that we don't read
 			// out of range
 			current_idx++;
 			if (current_idx >= argc) {
-				std::cerr << "No extensions provided to --exts" << std::endl;
+				std::cerr << "No extensions provided to --ext" << std::endl;
 				return 3;
 			}
-			std::string exts(argv[current_idx]);
-			std::cout << "Got exts: " << exts << std::endl;
+			std::string exts = ".";
+			exts += std::string(argv[current_idx]);
+			std::cout << "Got ext: " << exts << std::endl;
+			extensions.push_back(exts);
 		} else {
 			std::cerr << "Got unknown option '" << option << "'" << std::endl;
 			return 2;
