@@ -15,7 +15,9 @@ matrix:
       addons:
         apt:
           sources: ["ubuntu-toolchain-r-test", "llvm-toolchain-precise-3.9"]
-          packages: ["clang-3.9"]
+          # Install GCC 5 to ensure the experimental/filesystem headers are
+          # available
+          packages: ["g++-5", "clang-3.9"]
       env: COMPILER=clang++-3.9
 
 script:
