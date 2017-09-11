@@ -13,9 +13,9 @@ clean:
 	rm -f batchr_test
 
 batchr: $(SRC_CPP) $(SRC_HEADERS)
-	g++ -o batchr -std=c++11 $(SRC_CPP)
+	$(CXX) -o batchr -std=c++11 $(SRC_CPP)
 
 batchr_test: $(TEST_CPP) $(TEST_HEADERS)
-	g++ -Ivendor/doctest -Isrc/ -o batchr_test $(TEST_CPP)
+	$(CXX) -Ivendor/doctest -Isrc/ -o batchr_test $(TEST_CPP)
 
 .PHONY : compile test clean
