@@ -26,15 +26,17 @@ void print_help(std::string const &exec_name) {
 	std::cerr << std::endl;
 
 	std::cerr << "Options:" << std::endl;
-	std::cerr << "    -h, --help  Display this help message" << std::endl;
-	std::cerr << "    -e, --ext   Extensions to search for. For multiple extentions, " << std::endl;
-	std::cerr << "                use -e or --ext for each one." << std::endl;
+	std::cerr << "    -e, --ext      Extensions to search for. For multiple extentions, " << std::endl;
+	std::cerr << "                   use -e or --ext for each one." << std::endl;
+	std::cerr << "    -h, --help     Display this help message." << std::endl;
+	std::cerr << "    -v, --verbose  Display information on what the program is doing." << std::endl;
 }
 
 
 int main(int argc, char* argv[]) {
 	// Parse all options
 	bool help = false;
+	bool verbose = false;
 	std::vector<std::string> extensions;
 	int current_idx = 1;
 	for (; current_idx < argc; current_idx++) {
@@ -65,6 +67,8 @@ int main(int argc, char* argv[]) {
 			exts += std::string(argv[current_idx]);
 			std::cout << "Got ext: " << exts << std::endl;
 			extensions.push_back(exts);
+		} else if (option == "-v" || option == "--verbose") {
+			verbose = true;
 		} else {
 			std::cerr << "Got unknown option '" << option << "'" << std::endl;
 			return 2;
@@ -82,10 +86,20 @@ int main(int argc, char* argv[]) {
 	fs::path replacements_path(argv[current_idx++]);
 	std::vector<std::pair<std::string, std::string>>
 		replacements = replacements_from_file(replacements_path);
-	std::cout << "Replacement file is: " << replacements_path << std::endl;
-	for (auto& r : replacements) {
-		std::cout << "    " << r.first << " -> " << r.second << std::endl;
+
+	if (verbose) {
+		std::cout << "Loaded replacements from " << replacements_path << std::endl;
+		for (auto& r : replacements) {
+			std::cout << "Will replace \"" << r.first << "\" with \"" << r.second << "\"" << std::endl;
+		}
 	}
+
+	// Check if we managed to load any replacements from the given file
+	if (!replacements.size()) {
+		std::cerr << "No replacements found in " << replacements_path << std::endl;
+		return 4;
+	}
+
 
 	// Check if there where any files or folders specified
 	std::vector<fs::path> paths;
@@ -99,11 +113,15 @@ int main(int argc, char* argv[]) {
 		paths.push_back(".");
 	}
 
-	std::cout << "Looking in paths:" << std::endl;
+	// This flag is true as long as all files were successfully replaced
 	bool ok = true;
 	for (auto &path : Path::list_files(paths, extensions)) {
-		std::cout << "    " << path << std::endl;
+		if (verbose) {
+			std::cout << "Replacing " << path << std::endl;
+		}
+
 		if (replace_text(path, replacements)) {
+			std::cerr << "Error while reading " << path << std::endl;
 			ok = false;
 		}
 	}
@@ -111,6 +129,6 @@ int main(int argc, char* argv[]) {
 	if (ok) {
 		return 0;
 	} else {
-		return 4;
+		return 5;
 	}
 }

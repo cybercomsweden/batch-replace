@@ -63,13 +63,10 @@ int replace_text(fs::path const &path,
 		std::rename("./res_file.txt", (path.string()).c_str());
 		return 0;
 	} else {
-		std::cout << "At least one file not opened: " << std::endl;
-		if (myfile.is_open()){
-			std::cerr << "The text file" << std::endl;
+		if (myfile.is_open()) {
 			myfile.close();
 		}
-		if (res_file.is_open()){
-			std::cerr << "The resulting file" << std::endl;
+		if (res_file.is_open()) {
 			res_file.close();
 		}
 		return 1;
