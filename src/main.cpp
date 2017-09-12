@@ -9,27 +9,52 @@
 namespace fs = std::experimental::filesystem;
 
 void print_help(std::string const &exec_name) {
-	std::cerr << exec_name << " [options] <replacement-file> [files..]" << std::endl;
-	std::cerr << std::endl;
+	std::cerr
+		<< exec_name << " [options] <replacement-file> [files..]" << std::endl
+		<< std::endl
 
-	std::cerr << "Batch replace allows you to perform advanced search and replace on arbitrary" << std::endl;
-	std::cerr << "text files." << std::endl;
-	std::cerr << std::endl;
+		<< "Batch replace allows you to perform advanced search and replace on arbitrary" << std::endl
+		<< "text files." << std::endl
+		<< std::endl
 
-	std::cerr << "Arguments:" << std::endl;
-	std::cerr << "    <replacement-file>  A text file containing things to replace. If the" << std::endl;
-	std::cerr << "                        file name starts with a hyphen (-) use -- as the." << std::endl;
-	std::cerr << "                        last option." << std::endl;
-	std::cerr << "    [files..]           Optional list of files and directories to perform" << std::endl;
-	std::cerr << "                        replacements in. File extentions can be specified" << std::endl;
-	std::cerr << "                        using --ext." << std::endl;
-	std::cerr << std::endl;
+		<< "Arguments:" << std::endl
+		<< "    <replacement-file>  A text file containing things to replace. If the" << std::endl
+		<< "                        file name starts with a hyphen (-) use -- as the." << std::endl
+		<< "                        last option." << std::endl
+		<< "    [files..]           Optional list of files and directories to perform" << std::endl
+		<< "                        replacements in. File extentions can be specified" << std::endl
+		<< "                        using --ext." << std::endl
+		<< std::endl
 
-	std::cerr << "Options:" << std::endl;
-	std::cerr << "    -e, --ext      Extensions to search for. For multiple extentions, " << std::endl;
-	std::cerr << "                   use -e or --ext for each one." << std::endl;
-	std::cerr << "    -h, --help     Display this help message." << std::endl;
-	std::cerr << "    -v, --verbose  Display information on what the program is doing." << std::endl;
+		<< "Options:" << std::endl
+		<< "    -e, --ext      Extensions to search for. For multiple extentions, " << std::endl
+		<< "                   use -e or --ext for each one." << std::endl
+		<< "    -h, --help     Display this help message." << std::endl
+		<< "    -v, --verbose  Display information on what the program is doing." << std::endl
+		<< std::endl
+
+		<< "Replacement file format:" << std::endl
+		<< "    The replacement file contains rows of pairs of replacements:" << std::endl
+		<< std::endl
+		<< "        replace-this" << std::endl
+		<< "        with-this" << std::endl
+		<< std::endl
+		<< "        change-this" << std::endl
+		<< "        to-this" << std::endl
+		<< std::endl
+		<< "    The replacement file example above would 'replace-this' to 'with-this'" << std::endl
+		<< "    and all 'change-this' to 'to-this'." << std::endl
+		<< std::endl
+
+		<< "Example usage:" << std::endl
+		<< "    # Replace in all .txt files in the current working directory" << std::endl
+		<< "    " << exec_name << " -e txt replacements.txt" << std::endl
+		<< "    # Replace in all file in directory a/" << std::endl
+		<< "    " << exec_name << " replacements.txt a/" << std::endl
+		<< std::endl
+		<< "    # Replace in all .cpp and .h files in directories a/ and b/" << std::endl
+		<< "    " << exec_name << " --ext cpp --ext h replacements.txt a/ b/" << std::endl
+		<< std::endl;
 }
 
 
