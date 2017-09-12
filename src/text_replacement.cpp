@@ -45,19 +45,17 @@ replacements_from_file(fs::path const &path) {
 
 int replace_text(fs::path const &path,
 	std::vector<std::pair<std::string, std::string>> repl_pairs) {
-	
+
 	std::string line;
 	std::fstream myfile, res_file;
 
 	myfile.open(path.string());
 	res_file.open("./res_file.txt", std::fstream::out);
-	if (myfile.is_open() && res_file.is_open()){
-
-		while (getline(myfile, line)){
-
+	if (myfile.is_open() && res_file.is_open()) {
+		while (getline(myfile, line)) {
 			Line current(line);
 			current.replace_all(repl_pairs);
-			res_file << current.get_new_line();
+			res_file << current.get_new_line() << std::endl;
 		}
 
 		myfile.close();
