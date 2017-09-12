@@ -13,7 +13,7 @@ void print_help(std::string const &exec_name) {
 	std::cerr << std::endl;
 
 	std::cerr << "Batch replace allows you to perform advanced search and replace on arbitrary" << std::endl;
-	std::cerr << "text files. It allows " << std::endl;
+	std::cerr << "text files." << std::endl;
 	std::cerr << std::endl;
 
 	std::cerr << "Arguments:" << std::endl;
