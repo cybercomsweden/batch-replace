@@ -12,6 +12,11 @@ TEST_CASE("Test has_extension") {
 
 TEST_CASE("Test has_valid_extension") {
 	std::vector<std::string> extensions;
+
+	// All extensions are valid if there are no valid extensions specified
+	CHECK(Path::has_valid_extension("test.cpp", extensions));
+	CHECK(Path::has_valid_extension("test.cc", extensions));
+
 	extensions.push_back(".txt");
 	extensions.push_back(".h");
 	extensions.push_back(".cpp");
