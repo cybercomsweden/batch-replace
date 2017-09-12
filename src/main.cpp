@@ -100,7 +100,17 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::cout << "Looking in paths:" << std::endl;
+	bool ok = true;
 	for (auto &path : Path::list_files(paths, extensions)) {
 		std::cout << "    " << path << std::endl;
+		if (replace_text(path, replacements)) {
+			ok = false;
+		}
+	}
+
+	if (ok) {
+		return 0;
+	} else {
+		return 4;
 	}
 }
