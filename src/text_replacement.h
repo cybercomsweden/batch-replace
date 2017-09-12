@@ -24,6 +24,6 @@ public:
 std::vector<std::pair<std::string, std::string>> replacements_from_file(fs::path const &);
 
 
-void replace_text(fs::path const &, std::vector<std::pair<std::string, std::string>>);
+int replace_text(fs::path const &, std::vector<std::pair<std::string, std::string>>);
 
 #endif
