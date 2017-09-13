@@ -1,8 +1,11 @@
 #include <experimental/filesystem>
-#include <set>
-#include <string>
-#include <vector>
+#include <fstream>
 #include <iostream>
+#include <set>
+#include <stdlib.h>
+#include <string>
+#include <unistd.h>
+#include <vector>
 
 #include "path.h"
 
@@ -29,6 +32,35 @@ bool has_valid_extension(
 		}
 	}
 	return false;
+}
+
+fs::path open_tmp_file(fs::path path, std::fstream& file) {
+	// NOTE: This function is POSIX specific, but can be extended later on to
+	//       provide Windows support
+	path /= "XXXXXX";
+
+	// We must now convert the path to a C style string pointer. This is not
+	// possible using the standard library, and we have to resort to this
+	// solution to artificially create one. This assumes path doesn't contain
+	// null bytes. By allocating a vector we don't need to manually free the
+	// memory later.
+	const std::string& path_str = path;
+	std::vector<char> dst_path(path_str.begin(), path_str.end());
+	dst_path.push_back('\0');
+
+
+	// Create a temporary file and return its file descriptor and write its
+	// path to dst_path. Note that the length is guaranteed to be the same.
+	// we don't raise exceptions on error since it's possible to check if the
+	// file was opened
+	int fd = mkstemp(&dst_path[0]);
+	if (fd != -1) {
+		path.assign(dst_path.begin(), dst_path.end() - 1);
+		file.open(path.c_str(), std::fstream::out);
+		close(fd);
+	}
+
+	return path;
 }
 
 std::set<fs::path> list_files(

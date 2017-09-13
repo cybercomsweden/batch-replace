@@ -57,7 +57,6 @@ void print_help(std::string const &exec_name) {
 		<< std::endl;
 }
 
-
 int main(int argc, char* argv[]) {
 	// Parse all options
 	bool help = false;

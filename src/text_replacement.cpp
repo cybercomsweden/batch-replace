@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 
+#include "path.h"
 #include "text_replacement.h"
 
 namespace fs = std::experimental::filesystem;
@@ -43,31 +44,32 @@ replacements_from_file(fs::path const &path) {
 }
 
 
-int replace_text(fs::path const &path,
-	std::vector<std::pair<std::string, std::string>> repl_pairs) {
+int replace_text(fs::path const &src_path,
+	std::vector<std::pair<std::string, std::string>> repl_pairs
+) {
+	std::fstream src_file, dst_file;
+	src_file.open(src_path.string());
 
-	std::string line;
-	std::fstream myfile, res_file;
+	fs::path dst_path(Path::open_tmp_file("/tmp", dst_file));
 
-	myfile.open(path.string());
-	res_file.open("./res_file.txt", std::fstream::out);
-	if (myfile.is_open() && res_file.is_open()) {
-		while (getline(myfile, line)) {
+	if (src_file.is_open() && dst_file.is_open()) {
+		std::string line;
+		while (getline(src_file, line)) {
 			Line current(line);
 			current.replace_all(repl_pairs);
-			res_file << current.get_new_line() << std::endl;
+			dst_file << current.get_new_line() << std::endl;
 		}
 
-		myfile.close();
-		res_file.close();
-		std::rename("./res_file.txt", (path.string()).c_str());
+		src_file.close();
+		dst_file.close();
+		std::rename(dst_path.c_str(), src_path.c_str());
 		return 0;
 	} else {
-		if (myfile.is_open()) {
-			myfile.close();
+		if (src_file.is_open()) {
+			src_file.close();
 		}
-		if (res_file.is_open()) {
-			res_file.close();
+		if (dst_file.is_open()) {
+			dst_file.close();
 		}
 		return 1;
 	}
