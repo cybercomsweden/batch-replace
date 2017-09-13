@@ -5,6 +5,7 @@
 
 #include "path.h"
 #include "text_replacement.h"
+#include "utils.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -87,10 +88,9 @@ int main(int argc, char* argv[]) {
 				std::cerr << "No extensions provided to --ext" << std::endl;
 				return 3;
 			}
-			std::string exts = ".";
-			exts += std::string(argv[current_idx]);
-			std::cout << "Got ext: " << exts << std::endl;
-			extensions.push_back(exts);
+			std::string ext = ".";
+			ext += std::string(argv[current_idx]);
+			extensions.push_back(ext);
 		} else if (option == "-v" || option == "--verbose") {
 			verbose = true;
 		} else {
@@ -124,7 +124,6 @@ int main(int argc, char* argv[]) {
 		return 4;
 	}
 
-
 	// Check if there where any files or folders specified
 	std::vector<fs::path> paths;
 	for (; current_idx < argc; current_idx++) {
@@ -137,6 +136,15 @@ int main(int argc, char* argv[]) {
 		paths.push_back(".");
 	}
 
+	// Print which file extensions we're looking at
+	if (verbose) {
+		if (extensions.size()) {
+			std::cout << "Looking for files ending with " << human_join_or(extensions) << std::endl;
+		} else {
+			std::cout << "Looking for files with any extension" << std::endl;
+		}
+	}
+
 	// This flag is true as long as all files were successfully replaced
 	bool ok = true;
 	for (auto &path : Path::list_files(paths, extensions)) {
@@ -145,7 +153,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		if (replace_text(path, replacements)) {
-			std::cerr << "Error while reading " << path << std::endl;
+			std::cerr << "Couldn't read or write " << path << std::endl;
 			ok = false;
 		}
 	}
